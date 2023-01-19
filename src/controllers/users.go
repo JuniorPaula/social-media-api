@@ -5,6 +5,7 @@ import (
 	"api/src/models"
 	"api/src/repositories"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -25,9 +26,15 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
-	repository := repositories.CreateUsersRepository(db)
-	repository.Create(user)
+	repository := repositories.UsersRepository(db)
+	userID, err := repository.Create(user)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w.Write([]byte(fmt.Sprintf("ID Inserted: %d", userID)))
 }
 
 func FindUsers(w http.ResponseWriter, r *http.Request) {
