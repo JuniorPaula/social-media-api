@@ -15,8 +15,8 @@ type Users struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 }
 
-func (u *Users) HandlerUser() error {
-	if err := u.validator(); err != nil {
+func (u *Users) HandlerUser(step string) error {
+	if err := u.validator(step); err != nil {
 		return err
 	}
 
@@ -24,7 +24,7 @@ func (u *Users) HandlerUser() error {
 	return nil
 }
 
-func (u *Users) validator() error {
+func (u *Users) validator(step string) error {
 	if u.Name == "" {
 		return errors.New("o campo nome é obrigatório")
 	}
@@ -33,6 +33,9 @@ func (u *Users) validator() error {
 	}
 	if u.Email == "" {
 		return errors.New("o campo email é obrigatório")
+	}
+	if step == "create" && u.Password == "" {
+		return errors.New("o campo senha é obrigatório")
 	}
 	return nil
 }
