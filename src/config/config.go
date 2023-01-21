@@ -12,6 +12,7 @@ import (
 var (
 	ConnectStringDatabase = ""
 	Port                  = 0
+	SecrectKey            []byte
 )
 
 func InitValiables() {
@@ -31,4 +32,6 @@ func InitValiables() {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_DATABASE"),
 	)
+
+	SecrectKey = []byte(os.Getenv("JWT_SECRET"))
 }

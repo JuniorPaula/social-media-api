@@ -43,6 +43,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		utils.ResponseError(w, http.StatusUnauthorized, err)
 		return
 	}
-
-	w.Write([]byte("you are logged"))
+	token, err := auth.TokenGenerator(userFromDB.ID)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+	w.Write([]byte(token))
 }
