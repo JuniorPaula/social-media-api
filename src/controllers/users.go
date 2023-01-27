@@ -305,3 +305,68 @@ func Following(w http.ResponseWriter, r *http.Request) {
 
 	utils.ResponseJSON(w, http.StatusOK, users)
 }
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	userIDInToken, err := auth.GetUserID(r)
+	if err != nil {
+		utils.ResponseError(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	userID, err := strconv.ParseUint(params["userId"], 10, 64)
+	if err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if userIDInToken != userID {
+		utils.ResponseError(w, http.StatusForbidden, errors.New("you are not update password from another user"))
+		return
+	}
+
+	requestBody, err := io.ReadAll(r.Body)
+	if err != nil {
+		utils.ResponseError(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var password models.PasswordDTO
+	if err = json.Unmarshal(requestBody, &password); err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.UsersRepository(db)
+	passwordFromDb, err := repository.FindPasswordByUSerID(userID)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err = auth.Compare(passwordFromDb, password.OldPassword); err != nil {
+		utils.ResponseError(w, http.StatusUnauthorized, errors.New("passwords does not match"))
+		return
+	}
+
+	passwordWithHash, err := auth.Hash(password.NewPassword)
+	if err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = repository.UppdatePassword(userID, string(passwordWithHash)); err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusNoContent, nil)
+}
