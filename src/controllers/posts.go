@@ -58,7 +58,30 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	utils.ResponseJSON(w, http.StatusCreated, post)
 }
 
-func FindAllPosts(w http.ResponseWriter, r *http.Request) {}
+func FindAllPosts(w http.ResponseWriter, r *http.Request) {
+	userID, err := auth.GetUserID(r)
+	if err != nil {
+		utils.ResponseError(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewPostsRepository(db)
+	posts, err := repository.FindAll(userID)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, posts)
+
+}
 
 func FindPost(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)

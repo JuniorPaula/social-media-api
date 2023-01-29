@@ -63,3 +63,38 @@ func (repository Posts) FindById(postID uint64) (models.Post, error) {
 
 	return post, nil
 }
+
+func (repository Posts) FindAll(userId uint64) ([]models.Post, error) {
+	rows, err := repository.db.Query(`
+		SELECT distinct p.*, u.nickname FROM posts p LEFT JOIN users u ON u.id = p.author_id
+		LEFT JOIN followers f ON p.author_id = f.user_id WHERE u.id = ? or f.follower_id = ?
+		ORDER BY 1 DESC
+	`, userId, userId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+
+	for rows.Next() {
+		var post models.Post
+
+		if err = rows.Scan(
+			&post.ID,
+			&post.Title,
+			&post.Content,
+			&post.AuthorID,
+			&post.Likes,
+			&post.CreatedAt,
+			&post.AuthorNickname,
+		); err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+
+	}
+	return posts, nil
+}
