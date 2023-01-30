@@ -167,4 +167,44 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	utils.ResponseJSON(w, http.StatusNoContent, nil)
 }
 
-func DeletePost(w http.ResponseWriter, r *http.Request) {}
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+	userID, err := auth.GetUserID(r)
+	if err != nil {
+		utils.ResponseError(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	postID, err := strconv.ParseUint(params["postId"], 10, 64)
+	if err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.NewPostsRepository(db)
+	postFromDB, err := repository.FindById(postID)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if postFromDB.AuthorID != userID {
+		utils.ResponseError(w, http.StatusUnauthorized, errors.New("you are not authorized to delete post its not your"))
+		return
+	}
+
+	if err = repository.Delete(postID); err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusNoContent, nil)
+}
