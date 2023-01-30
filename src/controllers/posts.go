@@ -233,3 +233,28 @@ func FindAllPostsFromUser(w http.ResponseWriter, r *http.Request) {
 
 	utils.ResponseJSON(w, http.StatusOK, posts)
 }
+
+func LikePost(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	postID, err := strconv.ParseUint(params["postId"], 10, 64)
+	if err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.NewPostsRepository(db)
+	if err = repository.Like(postID); err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusNoContent, nil)
+}

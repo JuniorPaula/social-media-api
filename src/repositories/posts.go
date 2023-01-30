@@ -158,3 +158,17 @@ func (repository Posts) FindPostsFromUser(userId uint64) ([]models.Post, error) 
 	}
 	return posts, nil
 }
+
+func (repository Posts) Like(postId uint64) error {
+	statement, err := repository.db.Prepare("UPDATE posts SET likes = likes + 1 WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(postId); err != nil {
+		return err
+	}
+
+	return nil
+}
