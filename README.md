@@ -64,10 +64,10 @@ Configure as variáveis de ambientes seguindo: `env.example`
 #### **Request body**
 ~~~json
 {
-	"name": string,
-	"nickname": string,
-	"email": string,
-	"password": string
+	"name": "string",
+	"nickname": "string",
+	"email": "string",
+	"password": "string"
 }
 ~~~
 
@@ -76,12 +76,12 @@ Configure as variáveis de ambientes seguindo: `env.example`
 
 ~~~json
 {
-	"id": number,
-	"name": string,
-	"nickname": string,
-	"email": string,
-	"password": string,
-	"createdAt": string
+	"id": "number",
+	"name": "string",
+	"nickname": "string",
+	"email": "string",
+	"password": "string",
+	"createdAt": "string"
 }
 ~~~
 ![Generic badge](https://img.shields.io/badge/bad%20request-400-red)
@@ -108,9 +108,9 @@ Configure as variáveis de ambientes seguindo: `env.example`
 #### **Request body**
 ~~~json
 {
-	"name": string,
-	"nickname": string,
-	"email": string
+	"name": "string",
+	"nickname": "string",
+	"email": "string"
 }
 ~~~
 #### **Request headers**
@@ -334,7 +334,7 @@ Configure as variáveis de ambientes seguindo: `env.example`
 ~~~json
 [
 	{
-		"id": number,
+		"id": "number",
 		"name": "string",
 		"nickname": "string",
 		"email": "string",
@@ -383,7 +383,7 @@ Configure as variáveis de ambientes seguindo: `env.example`
 
 ~~~json
 {
-	"id": number,
+	"id": "number",
 	"name": "string",
 	"nickname": "string",
 	"email": "string",
@@ -432,7 +432,7 @@ Configure as variáveis de ambientes seguindo: `env.example`
 ~~~json
 [
 	{
-		"id": number,
+		"id": "number",
 		"name": "string",
 		"nickname": "string",
 		"email": "string",
@@ -482,7 +482,7 @@ Configure as variáveis de ambientes seguindo: `env.example`
 ~~~json
 [
 	{
-		"id": number,
+		"id": "number",
 		"name": "string",
 		"nickname": "string",
 		"email": "string",
@@ -577,11 +577,11 @@ Configure as variáveis de ambientes seguindo: `env.example`
 
 ~~~json
 {
-	"id": number,
+	"id": "number",
 	"title": "string",
 	"content": "string",
-	"authorId": number,
-	"likes": number,
+	"authorId": "number",
+	"likes": "number",
 	"createdAt": "string"
 }
 ~~~
@@ -790,11 +790,11 @@ Configure as variáveis de ambientes seguindo: `env.example`
 ~~~json
 [
 	{
-		"id": number,
+		"id": "number",
 		"title": "string",
 		"content": "string",
-		"authorId": number,
-		"likes": number,
+		"authorId": "number",
+		"likes": "number",
 		"createdAt": "string"
 	}
 ]
@@ -840,11 +840,11 @@ Configure as variáveis de ambientes seguindo: `env.example`
 
 ~~~json
 	{
-		"id": number,
+		"id": "number",
 		"title": "string",
 		"content": "string",
-		"authorId": number,
-		"likes": number,
+		"authorId": "number",
+		"likes": "number",
 		"createdAt": "string"
 	}
 ~~~
@@ -890,11 +890,11 @@ Configure as variáveis de ambientes seguindo: `env.example`
 ~~~json
 [
 	{
-		"id": number,
+		"id": "number",
 		"title": "string",
 		"content": "string",
-		"authorId": number,
-		"likes": number,
+		"authorId": "number",
+		"likes": "number",
 		"createdAt": "string"
 	}
 ]
